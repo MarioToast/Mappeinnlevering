@@ -23,7 +23,6 @@ public:
     virtual void draw()=0;
     virtual void move(float dt) { }
     virtual void move(float dx, float dy, float dz) { }
-protected:
     std::vector<gsml::Vertex> mVertices;
     std::vector<unsigned int> indices;
     unsigned int Index = 0;

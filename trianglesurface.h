@@ -18,6 +18,11 @@ public:
     void construct_cylinder();
     void construct_plane();
     std::vector<gsml::Vertex>& get_vertices() { return mVertices; } // 191120
+    float MinX = 0;
+    float MaxX = 0;
+    float MinY = 0;
+    float MaxY = 0;
+    bool MinMaxFound = false;
 };
 
 #endif // TRIANGLESURFACE_H

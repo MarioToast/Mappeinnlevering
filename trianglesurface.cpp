@@ -49,24 +49,28 @@ void TriangleSurface::readFile(std::string filnavn)
         float XDifference = 375500.0f;
         float YDifference = 6919100.0f;
         float ZDifference = 320.0f;
-        float ZShrink = 0.2f;
         for (int i=0; i<n; i+=4)
         {
             for (int j = 0; j<4; j++){
                 inn >> VertexX;
                 inn >> VertexY;
                 inn >> VertexZ;
-                //                if (i < 30 || i > 157227){
-                //                    qDebug() << VertexX << " " << VertexY << " " << VertexZ;
-                //                }
+
                 VertexX -= XDifference;
                 VertexY -= YDifference;
                 VertexZ -= ZDifference;
-                //                if (i < 30 || i > 157227){
-                //                    qDebug() << VertexX << " " << VertexY << " " << VertexZ;
-                //                    qDebug() << "---";
-                //                }
-                //VertexZ *= ZShrink;
+
+                if (MinMaxFound){
+
+                }
+                else{
+                    MinX = VertexX;
+                    MaxX = VertexX;
+                    MinY = VertexY;
+                    MaxY = VertexY;
+                    MinMaxFound = false;
+                }
+
                 vertex.set_xyz(VertexX, VertexY, VertexZ);
                 mVertices.push_back(vertex);
                 VertexX = 0.0f;
@@ -80,7 +84,7 @@ void TriangleSurface::readFile(std::string filnavn)
             indices.push_back(Index+1);
             indices.push_back(Index+3);
             if (i < 50 || i > 157227){
-                qDebug() << "Index batch number " << Index;
+                qDebug() << "Index batch number " << (Index/4)+1;
                 qDebug() << mVertices[Index].m_xyz[0] << " " << mVertices[Index].m_xyz[1] << " " << mVertices[Index].m_xyz[2];
                 qDebug() << mVertices[Index+1].m_xyz[0] << " " << mVertices[Index+1].m_xyz[1] << " " << mVertices[Index+1].m_xyz[2];
                 qDebug() << mVertices[Index+2].m_xyz[0] << " " << mVertices[Index+2].m_xyz[1] << " " << mVertices[Index+2].m_xyz[2];
@@ -92,83 +96,7 @@ void TriangleSurface::readFile(std::string filnavn)
     }
 }
 
-//void TriangleSurface::readFile(std::string filnavn)
-//{
-//    std::ifstream inn;
-//    inn.open(filnavn.c_str());
 
-//    if (inn.is_open())
-//    {
-//        int n;
-//        gsml::Vertex vertex;
-//        inn >> n;
-//        mVertices.reserve(n);
-//        QString Test;
-//        std::string Test2;
-//        float VertexX = 0.0f;
-//        float VertexY = 0.0f;
-//        float VertexZ = 0.0f;
-//        float XDifference = 375500.0f;
-//        float YDifference = 6919100.0f;
-//        float ZDifference = 320.0f;
-//        float ZShrink = 0.2f;
-//        gsml::Vertex vertex2;
-//        gsml::Vertex vertex3;
-//        gsml::Vertex vertex4;
-//        for (int i=0; i<n; i++)
-//        {
-//            inn >> VertexX;
-//            inn >> VertexY;
-//            inn >> VertexZ;
-//            VertexX -= XDifference;
-//            VertexY -= YDifference;
-//            VertexZ -= ZDifference;
-//            vertex.set_xyz(VertexX, VertexY, VertexZ);
-
-//            inn >> VertexX;
-//            inn >> VertexY;
-//            inn >> VertexZ;
-//            VertexX -= XDifference;
-//            VertexY -= YDifference;
-//            VertexZ -= ZDifference;
-//            vertex2.set_xyz(VertexX, VertexY, VertexZ);
-
-//            inn >> VertexX;
-//            inn >> VertexY;
-//            inn >> VertexZ;
-//            VertexX -= XDifference;
-//            VertexY -= YDifference;
-//            VertexZ -= ZDifference;
-//            vertex3.set_xyz(VertexX, VertexY, VertexZ);
-
-//            inn >> VertexX;
-//            inn >> VertexY;
-//            inn >> VertexZ;
-//            VertexX -= XDifference;
-//            VertexY -= YDifference;
-//            VertexZ -= ZDifference;
-//            vertex4.set_xyz(VertexX, VertexY, VertexZ);
-
-//            mVertices.push_back(vertex);
-//            mVertices.push_back(vertex2);
-//            mVertices.push_back(vertex3);
-//            mVertices.push_back(vertex3);
-//            mVertices.push_back(vertex2);
-//            mVertices.push_back(vertex4);
-//            VertexX = 0.0f;
-//            VertexY = 0.0f;
-//            VertexZ = 0.0f;
-//            if (i < 50 || i > 157227){
-//                qDebug() << "Index batch number " << Index;
-//                qDebug() << mVertices[Index].m_xyz[0] << " " << mVertices[Index].m_xyz[1] << " " << mVertices[Index].m_xyz[2];
-//                qDebug() << mVertices[Index+1].m_xyz[0] << " " << mVertices[Index+1].m_xyz[1] << " " << mVertices[Index+1].m_xyz[2];
-//                qDebug() << mVertices[Index+2].m_xyz[0] << " " << mVertices[Index+2].m_xyz[1] << " " << mVertices[Index+2].m_xyz[2];
-//                qDebug() << mVertices[Index+3].m_xyz[0] << " " << mVertices[Index+3].m_xyz[1] << " " << mVertices[Index+3].m_xyz[2];
-//            }
-//        }
-//        inn.close();
-//    }
-//}
 void TriangleSurface::writeFile(std::string filnavn)
 {
     std::ofstream ut;
@@ -227,8 +155,8 @@ void TriangleSurface::draw()
 {
     glBindVertexArray( mVAO );
     glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
-    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());//mVertices.size());
-    //glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    //glDrawArrays(GL_TRIANGLES, 0, mVertices.size());//mVertices.size());
+    glDrawElements(GL_POINTS, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
 }
 
 void TriangleSurface::construct()

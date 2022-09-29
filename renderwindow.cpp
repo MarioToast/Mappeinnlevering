@@ -153,9 +153,10 @@ void RenderWindow::render()
     //qDebug() << *mPMatrix;
     //gsmVMatrix->rotate(help, 0, 1, 0); help +=1;
     //gsml::Vector3d eye{2.5,2.5,2};
-    //gsml::Vector3d eye{help.x,help.y,help.z};
+    gsml::Vector3d eye{help.x,help.y,help.z};
+    //gsml::Vector3d eye{ball->mMatrix(0,3), ball->mMatrix(1,3), ball->mMatrix(2,3)};
     //gsml::Vector3d eye{help.x+375478.64f,help.y+6919199.36f,help.z+325.93f};
-    gsml::Vector3d eye{help.x-27,help.y+110,help.z-2};
+    //gsml::Vector3d eye{help.x-27,help.y+110,help.z-2};
     //gsml::Vector3d eye{help.x+80,help.y+100,help.z+20};
     gsml::Vector3d at{0, 0, 0};
     gsml::Vector3d up{0,0,1};
@@ -288,5 +289,13 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
         help.z += Movespeed;
     if (event->key() == Qt::Key_Z)
         help.z -= Movespeed;
-    //qDebug() << help.x << help.y << help.z;
+//    if (event->key() == Qt::Key_I)
+//        ball->mPosition.translate(0,Movespeed,0);
+//    if (event->key() == Qt::Key_K)
+//        ball->mPosition.translate(0,-Movespeed,0);
+//    if (event->key() == Qt::Key_J)
+//        ball->mPosition.translate(Movespeed,0,0);
+//    if (event->key() == Qt::Key_L)
+//        ball->mPosition.translate(-Movespeed,0,0);
+    qDebug() << help.x << help.y << help.z;
 }
