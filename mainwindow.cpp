@@ -19,6 +19,33 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_lineButton_clicked()
+{
+    mRenderWindow->surf2->meshType = "line";
+}
+
+void MainWindow::on_fillButton_clicked()
+{
+    mRenderWindow->surf2->meshType = "fill";
+}
+
+void MainWindow::on_pointButton_clicked()
+{
+    mRenderWindow->surf2->meshType = "point";
+}
+
+void MainWindow::on_moreRain_clicked()
+{
+    if (mRenderWindow->TimePerRain>0){
+        mRenderWindow->TimePerRain--;
+    }
+}
+
+void MainWindow::on_lessRain_clicked()
+{
+    mRenderWindow->TimePerRain++;
+}
+
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into
@@ -66,10 +93,3 @@ void MainWindow::init()
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 }
-
-//Example of a slot called from the button on the top of the program.
-void MainWindow::on_pushButton_clicked()
-{
-    qDebug() << "Button clicked";
-}
-

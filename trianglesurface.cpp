@@ -32,70 +32,120 @@ TriangleSurface::~TriangleSurface()
 
 void TriangleSurface::readFile(std::string filnavn)
 {
+    std::vector<gsml::Vertex> tempVertices;
     std::ifstream inn;
+    gsml::Vertex vertex;
     inn.open(filnavn.c_str());
-
+    // Read in file
     if (inn.is_open())
     {
         int n;
-        gsml::Vertex vertex;
         inn >> n;
-        mVertices.reserve(n);
-        QString Test;
-        std::string Test2;
+        tempVertices.reserve(n);
         float VertexX = 0.0f;
         float VertexY = 0.0f;
         float VertexZ = 0.0f;
+        // To make up for the huge numbers in the file
         float XDifference = 375500.0f;
         float YDifference = 6919100.0f;
         float ZDifference = 320.0f;
-        for (int i=0; i<n; i+=4)
+        for (int i=0; i<n; i++)
         {
-            for (int j = 0; j<4; j++){
-                inn >> VertexX;
-                inn >> VertexY;
-                inn >> VertexZ;
+            // Reads in one number at a time
+            inn >> VertexX;
+            inn >> VertexY;
+            inn >> VertexZ;
 
-                VertexX -= XDifference;
-                VertexY -= YDifference;
-                VertexZ -= ZDifference;
-
-                if (MinMaxFound){
-
-                }
-                else{
+            VertexX -= XDifference;
+            VertexY -= YDifference;
+            VertexZ -= ZDifference;
+            // Finds the highest and lowest X and Y values.
+            if (MinMaxFound){
+                if (VertexX < MinX){
                     MinX = VertexX;
-                    MaxX = VertexX;
-                    MinY = VertexY;
-                    MaxY = VertexY;
-                    MinMaxFound = false;
                 }
+                else if (VertexX > MaxX){
+                    MaxX = VertexX;
+                }
+                if (VertexY < MinY){
+                    MinY = VertexY;
+                }
+                else if (VertexY > MaxY){
+                    MaxY = VertexY;
+                }
+            }
+            else{
+                MinX = VertexX;
+                MaxX = VertexX;
+                MinY = VertexY;
+                MaxY = VertexY;
+                MinMaxFound = true;
+            }
+            // Pushes the vertex
+            vertex.set_xyz(VertexX, VertexY, VertexZ);
+            tempVertices.push_back(vertex);
+            VertexX = 0.0f;
+            VertexY = 0.0f;
+            VertexZ = 0.0f;
 
-                vertex.set_xyz(VertexX, VertexY, VertexZ);
-                mVertices.push_back(vertex);
-                VertexX = 0.0f;
-                VertexY = 0.0f;
-                VertexZ = 0.0f;
-            }
-            indices.push_back(Index);
-            indices.push_back(Index+1);
-            indices.push_back(Index+2);
-            indices.push_back(Index+2);
-            indices.push_back(Index+1);
-            indices.push_back(Index+3);
-            if (i < 50 || i > 157227){
-                qDebug() << "Index batch number " << (Index/4)+1;
-                qDebug() << mVertices[Index].m_xyz[0] << " " << mVertices[Index].m_xyz[1] << " " << mVertices[Index].m_xyz[2];
-                qDebug() << mVertices[Index+1].m_xyz[0] << " " << mVertices[Index+1].m_xyz[1] << " " << mVertices[Index+1].m_xyz[2];
-                qDebug() << mVertices[Index+2].m_xyz[0] << " " << mVertices[Index+2].m_xyz[1] << " " << mVertices[Index+2].m_xyz[2];
-                qDebug() << mVertices[Index+3].m_xyz[0] << " " << mVertices[Index+3].m_xyz[1] << " " << mVertices[Index+3].m_xyz[2];
-            }
-            Index += 4;
         }
         inn.close();
     }
-}
+    qDebug() << "Max X: " << MaxX;
+    qDebug() << "Min X: " << MinX;
+    qDebug() << "Max Y: " << MaxY;
+    qDebug() << "Min Y: " << MinY;
+    // Finds the average height of the Z-coordinate in every 5x5 square
+    int PointCount = 0;
+    float ZVertexTotal = 0.f;
+    // First goes along the X-axis
+    for (int t = 0; t < (MaxX-MinX)/5; t++){
+        // Then checks for every point along the Y-axis
+        for (int v = 0; v < (MaxY-MinY)/5; v++){
+            // Checks every vertex...
+            for (int u = 0; u < tempVertices.size(); u++){
+                // ...if it fits in the 5x5 square, first the x-coordinate then the y-coordinate
+                if (tempVertices[u].m_xyz[0] > (MinX+5*t) && tempVertices[u].m_xyz[0] < (5+MinX+5*t)){
+                    if (tempVertices[u].m_xyz[1] > (MinY+5*v) && tempVertices[u].m_xyz[1] < (5+MinY+5*v)){
+                        // Increases the total points in that square as well as the total amount of Z-coordinate
+                        PointCount++;
+                        ZVertexTotal += tempVertices[u].m_xyz[2];
+                        //qDebug() << tempVertices[u].m_xyz[0] << " " << tempVertices[u].m_xyz[1] << " " << tempVertices[u].m_xyz[2];
+                    }
+                }
+            }
+            if (PointCount > 0){
+                //qDebug() << PointCount;
+                //qDebug() << "Average height: " << ZVertexTotal/PointCount;
+                vertex.set_xyz((MinX+5*t)+2.5, (MinY+5*v)+2.5, ZVertexTotal/PointCount);
+                mVertices.push_back(vertex);
+                //qDebug() << mVertices.back().m_xyz[0] << " " << mVertices.back().m_xyz[1] << " " << mVertices.back().m_xyz[2];
+            }
+            else{
+                vertex.set_xyz((MinX+5*t)+2.5, (MinY+5*v)+2.5, 0);
+                mVertices.push_back(vertex);
+            }
+            PointCount = 0;
+            ZVertexTotal = 0.f;
+        }
+    }
 
+    // Setting up index based on the number of vertices
+    Index = 0;
+    for (int h = 0; h < mVertices.size(); h+=4){
+        indices.push_back(Index);
+        indices.push_back(Index+1);
+        indices.push_back(Index+2);
+        indices.push_back(Index+2);
+        indices.push_back(Index+1);
+        indices.push_back(Index+3);
+        Index+=4;
+    }
+    qDebug() << mVertices.size();
+    // X: -25 | 405
+    // Y: 25 | 105
+    // 5 x 5 ruter
+}
 
 void TriangleSurface::writeFile(std::string filnavn)
 {
@@ -116,6 +166,7 @@ void TriangleSurface::writeFile(std::string filnavn)
         ut.close();
     }
 }
+
 void TriangleSurface::init(GLint matrixUniform)
 {
     mMatrixUniform = matrixUniform;
@@ -155,8 +206,16 @@ void TriangleSurface::draw()
 {
     glBindVertexArray( mVAO );
     glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
-    //glDrawArrays(GL_TRIANGLES, 0, mVertices.size());//mVertices.size());
-    glDrawElements(GL_POINTS, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    //glDrawArrays(GL_TRIANGLE_FAN, 0, mVertices.size());//mVertices.size());
+    if (meshType == "point"){
+        glDrawElements(GL_POINTS, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+    if (meshType == "line"){
+        glDrawElements(GL_LINES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+    if (meshType == "fill"){
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
 }
 
 void TriangleSurface::construct()

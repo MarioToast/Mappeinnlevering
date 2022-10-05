@@ -12,6 +12,7 @@
 #include "trianglesurface.h"
 #include "matrix4x4.h"
 #include "rollingball.h"
+#include "raindrop.h"
 
 class QOpenGLContext;
 class Shader;
@@ -37,7 +38,7 @@ public:
 private slots:
     void render();
 
-private:
+public:
     void init();
     XYZ xyz;
     TriangleSurface surf;
@@ -46,6 +47,11 @@ private:
     bool mInitialized;
     gsml::Vector3d help;
     RollingBall* ball;
+    RainDrop* drop;
+    std::vector<RainDrop*> RainFall;
+
+    int RainTimer = 0;
+    int TimePerRain = 10;
 
     Shader *mShaderProgram;
     GLint  mMatrixUniform;

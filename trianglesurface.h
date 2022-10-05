@@ -23,6 +23,7 @@ public:
     float MinY = 0;
     float MaxY = 0;
     bool MinMaxFound = false;
+    std::string meshType = "point"; // "point" "line" "fill"
 };
 
 #endif // TRIANGLESURFACE_H

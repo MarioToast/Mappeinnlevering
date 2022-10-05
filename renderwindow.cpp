@@ -45,6 +45,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     surf2 = new TriangleSurface("../VSIMOblig3/Terrain.txt");
     ball = new RollingBall(3);
     dynamic_cast<RollingBall*>(ball)->setSurface(surf2);
+    //drop = new RainDrop(3);
+    RainFall.push_back(new RainDrop(3));
 
     gsmMMatrix = new gsml::Matrix4x4;
     gsmMMatrix->setToIdentity();
@@ -122,6 +124,10 @@ void RenderWindow::init()
     surf2->init(mMatrixUniform);
     ball->init(mMatrixUniform);
     xyz.init(mMatrixUniform);
+    //drop->init(mMatrixUniform);
+    for (int i = 0; i < RainFall.size(); i++){
+        RainFall[i]->init(mMatrixUniform);
+    }
 }
 
 ///Called each frame - doing the rendering
@@ -154,11 +160,13 @@ void RenderWindow::render()
     //gsmVMatrix->rotate(help, 0, 1, 0); help +=1;
     //gsml::Vector3d eye{2.5,2.5,2};
     gsml::Vector3d eye{help.x,help.y,help.z};
-    //gsml::Vector3d eye{ball->mMatrix(0,3), ball->mMatrix(1,3), ball->mMatrix(2,3)};
+    //gsml::Vector3d eye{help.x+190,help.y+65,help.z+20};
     //gsml::Vector3d eye{help.x+375478.64f,help.y+6919199.36f,help.z+325.93f};
     //gsml::Vector3d eye{help.x-27,help.y+110,help.z-2};
     //gsml::Vector3d eye{help.x+80,help.y+100,help.z+20};
-    gsml::Vector3d at{0, 0, 0};
+    //gsml::Vector3d at{0, 0, 0};
+    gsml::Vector3d at{190, 65, 20};
+    //gsml::Vector3d at{ball->mMatrix(0,3), ball->mMatrix(1,3), ball->mMatrix(2,3)};
     gsml::Vector3d up{0,0,1};
     gsmVMatrix->lookAt(eye, at, up);
 
@@ -170,6 +178,18 @@ void RenderWindow::render()
     surf2->draw();
     ball->move(0.017f);
     ball->draw();
+    //drop->draw();
+    for (int i = 0; i < RainFall.size(); i++){
+        if (RainFall[i]){
+            RainFall[i]->draw();
+            if (RainFall[i]->LifeTimer <= 0){
+                RainDrop* temppoint = RainFall[i];
+                RainFall.erase(RainFall.begin()+i);
+                temppoint->DestroyDrop();
+            }
+        }
+    }
+
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
@@ -181,6 +201,18 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+
+    RainTimer++;
+    if (RainTimer >= TimePerRain){
+        RainFall.push_back(new RainDrop(3));
+        for (int i = 0; i < RainFall.size(); i++){
+            if (RainFall[i]->DoneInit == false){
+                RainFall[i]->init(mMatrixUniform);
+            }
+        }
+        RainTimer = 0;
+    }
+    //qDebug() << RainFall.size();
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -297,5 +329,5 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 //        ball->mPosition.translate(Movespeed,0,0);
 //    if (event->key() == Qt::Key_L)
 //        ball->mPosition.translate(-Movespeed,0,0);
-    qDebug() << help.x << help.y << help.z;
+   // qDebug() << help.x << help.y << help.z;
 }

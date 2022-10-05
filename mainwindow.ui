@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1047</width>
-    <height>788</height>
+    <width>1140</width>
+    <height>1140</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,14 +16,58 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="lineButton">
       <property name="text">
-       <string>PushButton</string>
+       <string>Lines</string>
       </property>
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="OpenGLLayout"/>
+     <widget class="QPushButton" name="pointButton">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Points</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="fillButton">
+      <property name="text">
+       <string>Fill</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="moreRain">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Increase Rain</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="lessRain">
+      <property name="text">
+       <string>Decrease Rain</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="OpenGLLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -32,8 +76,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1047</width>
-     <height>22</height>
+     <width>1140</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

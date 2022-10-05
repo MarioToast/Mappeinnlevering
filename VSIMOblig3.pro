@@ -14,6 +14,7 @@ HEADERS += \
     Matrix4x4/vertex.h \
     mainwindow.h \
     octahedronball.h \
+    raindrop.h \
     renderwindow.h \
     rollingball.h \
     shader.h \
@@ -27,6 +28,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     octahedronball.cpp \
+    raindrop.cpp \
     renderwindow.cpp \
     rollingball.cpp \
     shader.cpp \

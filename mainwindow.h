@@ -19,7 +19,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_lineButton_clicked();
+    void on_fillButton_clicked();
+    void on_pointButton_clicked();
+    void on_moreRain_clicked();
+    void on_lessRain_clicked();
 
 private:
     void init();
