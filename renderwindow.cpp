@@ -42,7 +42,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //qDebug() << v[0] <<v[1] << v[3] << v[2];
 
     // Demo
-    surf2 = new TriangleSurface("../VSIMOblig3/Terrain.txt");
+    surf2 = new TriangleSurface("../Mappeinnlevering/Terrain.txt");
     ball = new RollingBall(3);
     dynamic_cast<RollingBall*>(ball)->setSurface(surf2);
     //drop = new RainDrop(3);
@@ -104,7 +104,7 @@ void RenderWindow::init()
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
 
-    mShaderProgram = new Shader("../VSIMOblig3/dagvertex.vert", "../VSIMOblig3/dagfragment.frag");
+    mShaderProgram = new Shader("../Mappeinnlevering/dagvertex.vert", "../Mappeinnlevering/dagfragment.frag");
 
     //********************** Making the object to be drawn **********************
 
