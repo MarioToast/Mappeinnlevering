@@ -131,17 +131,23 @@ void TriangleSurface::readFile(std::string filnavn)
     }
 
     // Setting up index based on the number of vertices
-    Index = 0;
-    for (int h = 0; h < mVertices.size(); h+=4){
-        indices.push_back(Index);
-        indices.push_back(Index+1);
-        indices.push_back(Index+2);
-        indices.push_back(Index+2);
-        indices.push_back(Index+1);
-        indices.push_back(Index+3);
-        Index+=4;
+    int XSquares = (MaxX-MinX)/5;
+    int YSquares = (MaxY-MinY)/5;
+    int Index = 0;
+    for (int i = 0; i < YSquares; i++){
+        for (int j = 0; j < XSquares; j++){
+            indices.push_back(Index);
+            indices.push_back(Index+1);
+            indices.push_back(Index+MaxY+1);
+            indices.push_back(Index+MaxY);
+            indices.push_back(Index);
+            indices.push_back(Index+MaxY+1);
+            Index++;
+            //qDebug() << "Box";
+        }
+        Index++;
+        //qDebug() << "Next row";
     }
-    qDebug() << mVertices.size();
     // X: -25 | 405
     // Y: 25 | 105
     // 5 x 5 ruter
